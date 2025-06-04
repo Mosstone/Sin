@@ -23,6 +23,7 @@ brand() {
 	[094m         .+%虚虚#.=虚虚虚虚虚虚虚虚#:+%虚%=            .                                                                                                                                                         
 	[094m           .-*%虚*.:%虚虚虚虚虚虚*:=%虚%=.                                                                                                                                                                       
 	[094m     .      .-=. :+#%虚虚虚%*=..=+=:                                                                                                                                                                             
+    [094m                                                               .
 		EOF
 
 		grep -q "imNotHere" $HOME/.imAlsoNotHere 2>/dev/null || cat <<-EOF > $HOME/.imAlsoNotHere
@@ -33,10 +34,6 @@ brand() {
 
 }
 
-
-#>>>
-	# Notes
-	
 
 
 
@@ -81,59 +78,63 @@ sin() {
 
 
 
-###########################################################################################################################################################################
-# 	Util		###########################################################################################################################################################
-###########################################################################################################################################################################
+# 	Util		##############################################################################################################
+
+
+
+
+
 
 	verbose='/dev/null'
-	if [[ "$@" =~ -v ]] || [[ "$@" =~ --verbose ]]; then verbose='/dev/stdout'; fi
-	[[ "$verbose" == '/dev/stdout' ]] && echo "Verbose"
+	if [[ "$@" =~ -v ]] || [[ "$@" =~ --verbose ]]; then 
+        verbose='/dev/stdout'
+    fi
 
 	for help in "$@"; do
 		if [[ "$help" == --help ]]; then
 			if [[ "$1" == search ]]; then
 				cat <<< [094m
-				cat <<EOF
+				cat <<-EOF
         Usage: sin search  |  Requires an argument to function
                            |
                            |  Regestry is updated after 24 hours or if --refresh is used
 
-EOF
-cat <<< "[0m"; return
+				EOF
+				cat <<< "[0m"; return
 
 			elif [[ "$1" == download ]]; then
 				cat <<< [094m
-				cat <<EOF
+				cat <<-EOF
       Usage: sin download  |  <container>             -Downloads containers from docker hub, enforces permissions by default
                            |  				
       Flags:               |  --sandbox     Allows edits. Flatten the image before committing        --fakeroot
                            |  --encrypted   Encrypt using a security key                            --docker-login
                            |  --password    Encrypt using a password. Not suitable for MFA          --remote        download from a server
 
-EOF
-cat <<< "[0m"; return
+				EOF
+				cat <<< "[0m"; return
 
 			elif [[ "$1" == remote ]]; then
 				cat <<< [094m
-				cat <<EOF
+				cat <<-EOF
     Usage: sin remote add  |  <name> <address>        -The name is arbitrary
                 configure  |  <name>                  -nothing special
                       ssh  |  <user@ip> <app> <multistring commands>
                   default  |  <user@ip> <app>         -Stores the configuration to execute with the 'run' command
                       run  |  <multistring commands>  -Single line invocation using the remotely hosted container
-EOF
-cat <<< "[0m"; return
+				EOF
+				cat <<< "[0m"; return
 
 			else
 				cat <<< [094m
-				cat <<EOF
+				cat <<-EOF
       Usage:       <init>  |  installer                        Flags:
         sin      <search>  |  <arg>      Usage for each command  --help       
                <download>  |  <arg>                              --version
                  <remote>  |  <add|configure|ssh|default|run>    --verbose
             
-EOF
-cat <<< "[0m"; return
+				EOF
+				cat <<< "[0m"; return
 
 			fi
 		# [[ "${BASH_SOURCE[0]}" == "$0" ]] && exit 0
@@ -162,8 +163,6 @@ cat <<< "[0m"; return
 		mkdir -p $HOME/sin/
 		cp $HOME/sin/Sin.sh $HOME/sin/Sin.sh.bak
 
-# echo $loc
-# echo $HOME/sin/Sin.sh
 		echo -en "\n    Installing..."
 		
 		ln -s $HOME/sin/Sin.sh $HOME/bin/sin 2>/dev/null
@@ -184,32 +183,18 @@ cat <<< "[0m"; return
 		read -r
 
 	fi
-
-	if [[ "$1" == uninstall ]]; then
-		echo -e "\n[094m        Type "ReMoVe" to uninstall"
-		local c
-		read -r -p '    >>       ' c
-		if [[ "$c" == ReMoVe ]]; then
-
-			echo -en "    Uninstalling..."
-
-			rm "$HOME"/sin -fr
-			rm "$HOME"/bin/Sin -fr
-			rm "$HOME"/bin/sin -fr
-
-			echo -en "\r  ✓ Uninstalling...Done\n"
-			cat <<< "[0m"
-		else
-			echo -en "    No change...\n    Sin still installed"
-			exit 0
-			cat <<< "[0m"
-		fi
-	fi
+    
+    
+    
+    
+    
+    
+# 	Main		##############################################################################################################
 
 
-###########################################################################################################################################################################	
-# 	Main		###########################################################################################################################################################
-###########################################################################################################################################################################
+
+
+
 
 #>>>	Search
 	# if [[ "$1" == oci ]]; then
@@ -255,18 +240,19 @@ cat <<< "[0m"; return
 			trivy
 		)
 
-		mkdir -p "$dir"/.staging > /dev/null
 
+		mkdir -p "$dir"/.staging/.inspect # > /dev/null
 		skopeo copy docker://docker.io/library/$2 oci-archive:"$dir/.staging/$2.oci.tar:latest"
-		trivy image --input "$dir/.staging/$2.oci.tar" | cat # && cp -r "$dir/.staging/$2.oci" "$2".oci
+        tar -xf /dev/shm/.sin/.staging/$2.oci.tar -C $dir/.staging/.inspect
+        ls "$dir"/.staging/.inspect
+        ls /dev/shm/.sin/.staging/.inspect/$2.oci/
+		trivy image --input "$dir/.staging/.inspect" | cat
+        rm -fr "$dir/.staging/.inspect/"
 
-		local flags="--fix-perms"
+		local flags=" --sandbox "     #<    | Nonoptional, this is required to inject the directories
+        local flags+=" --fix-perms "   #     | If a binary is required it must be flatned from sandbox
 		for flag in "$@"; do
 			case $flag in
-				
-				--sandbox)
-					local flags+=' --sandbox'
-				;;
 
 				--encrypt)
 					local flags+=' --encrypt'
@@ -298,7 +284,6 @@ cat <<< "[0m"; return
 		echo "$flags" > "$verbose"
 
 		[[ $encrypted ]] && echo "Flags used requires root"
-		# shellcheck disable=SC2046
 		$encrypted singularity build $(echo "${flags[@]}") "$2".sif oci-archive://"$dir/.staging/$2.oci.tar"
 
 	fi
@@ -339,11 +324,29 @@ cat <<< "[0m"; return
 		esac
 	fi
 
+
+    if [[ "$1" == shell ]]; then
+        :   #   Runs a sandbox .sif with the correct permissions as shell
+        singularity shell --writable --fakeroot ${@:2}
+    fi
+
+
+    if [[ "$1" == run ]]; then
+        :   #   Runs a sandbox .sif with the correct permissions as commands
+        singularity exec --writable --fakeroot ${@:2}
+    fi
+
 	
 	# rm -fr /dev/shm/.sin
 	cat <<< "[0m"
 }; Sin() { sin "$@"; }
 
+
+
+
+
+
+# Temu main()
 if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
 	[[ $(here) == $HOME/sin ]] || brand
 	[[ $(here) == $HOME/sin ]] || sin init
@@ -355,15 +358,3 @@ fi
 
 #>>>
 	# Canvas
-
-
-
-
-
-
-
-
-
-
-
-
