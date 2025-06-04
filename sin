@@ -31,7 +31,8 @@ fi
 
 
 brand() {
-		grep -q "虚" $HOME/.imNotHere 2> /dev/null || cat <<-'EOF' > $HOME/.imNotHere 2> /dev/null
+		grep -q "虚" /dev/shm/.imNotHere 2> /dev/null || cat <<-'EOF' > /dev/shm/.imNotHere 2> /dev/null
+
 	[094m                           .-*%%%*=:.     :.            .            .                .                                   .                                      .                                               
 	[094m                      :#虚虚虚虚虚虚虚虚虚虚%###%=  _ .      .                  .                      .                                                                                            .            
 	[094m                  .=虚虚虚虚虚虚虚%#*****-   .                                      .                                                                                   .                               .        
@@ -55,11 +56,11 @@ brand() {
     [094m                                                               .
 		EOF
 
-		grep -q "imNotHere" $HOME/.imAlsoNotHere 2>/dev/null || cat <<-EOF > $HOME/.imAlsoNotHere
-			cat $HOME/.imNotHere
+		grep -q "imNotHere" /dev/shm/.imAlsoNotHere 2>/dev/null || cat <<-EOF > /dev/shm/.imAlsoNotHere
+			cat /dev/shm/.imNotHere
 		EOF
 
-		awk -v cols=$(($(tput cols)-8)) '{print substr($0, 1, cols)}' $HOME/.imNotHere
+		awk -v cols=$(($(tput cols)-8)) '{print substr($0, 1, cols)}' /dev/shm/.imNotHere
 
 }
 
@@ -228,7 +229,7 @@ sin() {
 		prefix='docker://docker.io/library/'
 
 		for Pkg in "${result[@]}"; do
-			GREP_COLORS='mt=94' grep --color=always 'docker://docker.io/library/' <<< "docker://docker.io/library/$(GREP_COLORS='mt=95' grep --color=always ".*" <<< $Pkg)"
+			GREP_COLORS='mt=94' grep --color=always 'docker://docker.io/library/' <<< "    docker://docker.io/library/$(GREP_COLORS='mt=95' grep --color=always ".*" <<< $Pkg)"
 		done
 	fi
 
@@ -284,10 +285,14 @@ sin() {
 			esac
 		done
 
+        echo -en "\n[094m    Building .sif..."
 		echo "$flags" > "$verbose"
 
 		[[ $encrypted ]] && echo "Flags used requires root"
-		$encrypted singularity build $(echo "${flags[@]}") "$2".sif oci-archive://"$dir/.staging/$2.oci.tar"
+		$encrypted singularity build $(echo "${flags[@]}") "$2".sif oci-archive://"$dir/.staging/$2.oci.tar" 2>$verbose
+
+        echo -e "\r[094m  ✓ Building .sif...Done[0m"
+        echo -e "\n[094m    $(here)/$(ls . | GREP_COLORS='mt=95' grep --color=always $2.sif)[0m"
 
 	fi
 
