@@ -1,6 +1,35 @@
 #!/usr/bin/env bash
 
 
+version="v.1.0.1"
+
+
+
+
+
+
+here() {
+	local here="$(dirname "$(realpath ${BASH_SOURCE[0]})")"
+	
+	local i="$1"
+	while [[ "$i" -gt 0 ]]; do
+		if [[ "$i" -gt 100 ]]; then
+			i=100
+		fi
+		((--i))
+		here="$(dirname "$here")"
+	done
+	echo "$here" > /dev/stdout
+}
+
+if [[ "$@" =~ '--version' ]]; then 
+	cat <<-"EOF"
+	Sin Standard $version
+	EOF
+	return
+fi
+
+
 brand() {
 		grep -q "虚" $HOME/.imNotHere 2> /dev/null || cat <<-'EOF' > $HOME/.imNotHere 2> /dev/null
 	[094m                           .-*%%%*=:.     :.            .            .                .                                   .                                      .                                               
@@ -33,32 +62,6 @@ brand() {
 		awk -v cols=$(($(tput cols)-8)) '{print substr($0, 1, cols)}' $HOME/.imNotHere
 
 }
-
-
-
-
-
-
-here() {
-	local here="$(dirname "$(realpath ${BASH_SOURCE[0]})")"
-	
-	local i="$1"
-	while [[ "$i" -gt 0 ]]; do
-		if [[ "$i" -gt 100 ]]; then
-			i=100
-		fi
-		((--i))
-		here="$(dirname "$here")"
-	done
-	echo "$here" > /dev/stdout
-}
-
-if [[ "$@" =~ '--version' ]]; then 
-	cat <<-'EOF'
-	Sin Standard v 1.0.0
-	EOF
-	return
-fi
 
 
 sin() {
