@@ -55,7 +55,7 @@ here() {
 
 if [[ "$@" =~ '--version' ]]; then 
 	cat <<-'EOF'
-	Sin Standard v 0.1.3
+	Sin Standard v 1.0.0
 	EOF
 	return
 fi
