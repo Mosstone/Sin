@@ -1,0 +1,19 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "author": [
+    {
+      "@id": "https://orcid.org/0009-0002-5084-0465",
+      "@type": "Person",
+      "familyName": "Buerer",
+      "givenName": "Daniel"
+    }
+  ],
+  "datePublished": "2025-06-04",
+  "description": "Pulls images from the trusted namespace in dockerhub, runs a security scan, and builds it using singularity with optimal settings for mutable .sif containers, along with a command tree allowing for standardized shell and execution\nFor remote execution for NAT access, memorizes the default address and credentials to use simplifying access from edge devices that only need a single default\n",
+  "identifier": "https://doi.org/10.5281/zenodo.15593249",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "name": "sin",
+  "url": "https://github.com/Mosstone/Sin",
+  "version": "1.0.0"
+}
