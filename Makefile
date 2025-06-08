@@ -13,8 +13,9 @@ DATADIR   := $(DIRECT)/share
 MANDIR    := $(DATADIR)/man
 
 EXECDIR     := sin
-TARBALL     := tarball.tar.gz
+TARBALL     := null # tarball.tar.gz
 DISTDIR     := Application
+COMMAND     := sin
 
 .PHONY: all unpack link run clean
 
@@ -46,13 +47,11 @@ unpack:
 link: unpack
 
 	@mkdir -p $(PREFIX)/bin/
-	@ln -sf $(CURDIR)/$(EXECDIR) $(PREFIX)/bin/sin
+	@ln -sf $(CURDIR)/$(EXECDIR) $(PREFIX)/bin/$(COMMAND)
 
 run: link
 
-# 	sudo usermod --add-subuids 100000-165536 shade
-# 	sudo usermod --add-subgids 100000-165536 shade
 	./$(EXECDIR) --version
 
 clean:
-	rm $(PREFIX)/sin
+	rm $(PREFIX)/bin/$(COMMAND)

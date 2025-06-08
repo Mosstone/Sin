@@ -1,7 +1,14 @@
 #!/usr/bin/env bash
 
 
-version="v.1.0.1"
+version="v.1.0.2 alpha"
+
+
+
+
+
+
+# 	Util		##############################################################################################################
 
 
 
@@ -23,10 +30,10 @@ here() {
 }
 
 if [[ "$@" =~ '--version' ]]; then 
-	cat <<-"EOF"
-	Sin Standard $version
+	cat <<-EOF
+	[094m    Sin Standard $version[0m
 	EOF
-	return
+    exit 0
 fi
 
 
@@ -76,13 +83,6 @@ sin() {
 		! command -v "$Pkg" > /dev/null && grep "'>><<' Dependency missing: $Pkg" <<< "    '>><<' Dependency missing: $Pkg" && local exit=1
 	done
 	[[ $exit == 1 ]] && return
-
-
-
-
-
-
-# 	Util		##############################################################################################################
 
 
 
