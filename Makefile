@@ -12,7 +12,7 @@ SYSCONFDIR:= $(DIRECT)/etc
 DATADIR   := $(DIRECT)/share
 MANDIR    := $(DATADIR)/man
 
-EXECDIR     := sin
+EXECDIR     := Sin
 TARBALL     := null # tarball.tar.gz
 DISTDIR     := Application
 COMMAND     := sin
