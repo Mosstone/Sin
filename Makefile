@@ -51,7 +51,7 @@ link: unpack
 
 run: link
 
-	./$(EXECDIR) --version
+	$(COMMAND) --version
 
 clean:
 	rm $(PREFIX)/bin/$(COMMAND)
