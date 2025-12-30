@@ -101,7 +101,7 @@ sin() {
 				cat <<-EOF
         Usage: sin search  |  Requires an argument to function
                            |
-                           |  Regestry is updated after 24 hours or if --refresh is used
+                           |  Registry is updated after 24 hours or if --refresh is used
 
 				EOF
 				cat <<< "[0m"; return
