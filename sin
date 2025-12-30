@@ -170,7 +170,6 @@ sin() {
 		echo -en "\n    Installing..."
 		
 		ln -s $HOME/sin/Sin.sh $HOME/bin/sin 2>/dev/null
-		ln -s $HOME/Sin/Sin.sh $HOME/bin/sin 2>/dev/null
 
 
 		cp $loc $HOME/sin/Sin.sh # > /dev/null
